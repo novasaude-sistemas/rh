@@ -10,13 +10,11 @@
       box-sizing: border-box;
       font-family: Arial, Helvetica, sans-serif;
     }
-
     body {
       margin: 0;
       background-color: #f3f4f6;
       color: #111827;
     }
-
     header {
       background-color: #111827;
       color: #f9fafb;
@@ -24,31 +22,30 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
+      gap: 8px;
+      flex-wrap: wrap;
     }
-
     header .logo {
       font-weight: bold;
       font-size: 18px;
     }
-
     header .user-info {
       font-size: 14px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
     }
-
     header button {
-      margin-left: 8px;
       padding: 4px 10px;
       border-radius: 4px;
       border: none;
       cursor: pointer;
       font-size: 13px;
     }
-
     header .btn-sair {
       background-color: #b91c1c;
       color: #fff;
     }
-
     header .btn-atualizar {
       background-color: #2563eb;
       color: #fff;
@@ -70,7 +67,7 @@
       margin-bottom: 16px;
     }
 
-    .card h2 {
+    .card h2, .card h3 {
       margin-top: 0;
       font-size: 18px;
     }
@@ -86,25 +83,23 @@
       color: #fff;
       font-size: 14px;
     }
-
     .btn-secondary {
       background-color: #6b7280;
+      color: #fff;
     }
-
     .btn-danger {
       background-color: #b91c1c;
+      color: #fff;
     }
 
     .input-group {
       margin-bottom: 10px;
     }
-
     .input-group label {
       display: block;
       font-size: 13px;
       margin-bottom: 4px;
     }
-
     .input-group input,
     .input-group select,
     .input-group textarea {
@@ -120,7 +115,6 @@
       flex-wrap: wrap;
       gap: 16px;
     }
-
     .col-6 {
       flex: 1 1 300px;
     }
@@ -130,24 +124,20 @@
       border-collapse: collapse;
       font-size: 13px;
     }
-
     .table th,
     .table td {
       border: 1px solid #e5e7eb;
       padding: 6px 8px;
       text-align: left;
     }
-
     .table th {
       background-color: #f9fafb;
       font-weight: 600;
     }
 
-    /* Layout das “páginas” internas */
     .page-section {
       display: none;
     }
-
     .page-section.active {
       display: block;
     }
@@ -159,7 +149,6 @@
       align-items: center;
       justify-content: center;
     }
-
     #login-box {
       width: 100%;
       max-width: 380px;
@@ -168,13 +157,11 @@
       padding: 24px;
       box-shadow: 0 1px 4px rgba(0,0,0,0.15);
     }
-
     #login-box h1 {
       margin-top: 0;
       font-size: 20px;
       margin-bottom: 16px;
     }
-
     #login-message {
       font-size: 13px;
       color: #b91c1c;
@@ -182,20 +169,18 @@
       min-height: 18px;
     }
 
-    /* Dashboard inicial (macrocampos) */
+    /* Dashboard cards */
     #macrogrid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
       gap: 16px;
     }
 
-    /* Notificações (sininho) */
+    /* Notificações */
     .notif-area {
       position: relative;
       display: inline-block;
-      margin-right: 8px;
     }
-
     .notif-badge {
       position: absolute;
       top: -4px;
@@ -206,11 +191,10 @@
       padding: 1px 5px;
       border-radius: 999px;
     }
-
     .notif-panel {
       position: absolute;
       right: 0;
-      top: 24px;
+      top: 26px;
       background-color: #ffffff;
       border-radius: 6px;
       box-shadow: 0 2px 6px rgba(0,0,0,0.15);
@@ -221,17 +205,15 @@
       padding: 8px;
       font-size: 13px;
     }
-
     .notif-item {
       border-bottom: 1px solid #e5e7eb;
       padding: 4px 0;
     }
-
     .notif-item:last-child {
       border-bottom: none;
     }
 
-    /* Modal simples */
+    /* Modal */
     .modal-backdrop {
       position: fixed;
       inset: 0;
@@ -241,7 +223,6 @@
       justify-content: center;
       z-index: 50;
     }
-
     .modal-box {
       background-color: #fff;
       padding: 16px;
@@ -249,25 +230,15 @@
       max-width: 420px;
       width: 90%;
     }
-
     .modal-box h3 {
       margin-top: 0;
       font-size: 16px;
-    }
-
-    @media (max-width: 640px) {
-      header {
-        flex-wrap: wrap;
-        gap: 8px;
-      }
     }
   </style>
 </head>
 <body>
 
-  <!-- =================== -->
-  <!--  PÁGINA: LOGIN      -->
-  <!-- =================== -->
+  <!-- PÁGINA: LOGIN -->
   <div id="page-login" class="page-section active">
     <div id="login-box">
       <h1>Nova Saúde RH</h1>
@@ -293,9 +264,7 @@
     </div>
   </div>
 
-  <!-- =================== -->
-  <!--  PÁGINA: APLICATIVO -->
-  <!-- =================== -->
+  <!-- PÁGINA: APLICATIVO -->
   <div id="page-app" class="page-section hidden">
 
     <!-- Cabeçalho -->
@@ -313,7 +282,7 @@
           <div id="notif-panel" class="notif-panel hidden"></div>
         </span>
 
-        <button id="btn-refresh" class="btn-atualizar btn">
+        <button id="btn-refresh" class="btn-atualizar">
           Atualizar
         </button>
 
@@ -326,7 +295,7 @@
     <!-- Conteúdo principal -->
     <main>
 
-      <!-- DASHBOARD (macrocampos) -->
+      <!-- DASHBOARD -->
       <section id="view-dashboard" class="page-section active">
         <div class="card">
           <h2>Início</h2>
@@ -337,76 +306,42 @@
 
         <div id="macrogrid">
 
-          <!-- Minha equipe -->
           <div class="card">
             <h2>Minha equipe</h2>
             <p style="font-size:13px;">
               Gestão de escala, férias, dados e histórico dos colaboradores.
             </p>
-
-            <button class="btn" data-nav="view-gestao-equipe">
-              Gestão de equipe
-            </button>
-
-            <button class="btn" data-nav="view-gestao-ferias">
-              Gestão de férias
-            </button>
-
-            <button class="btn" data-nav="view-escala">
-              Escala de trabalho
-            </button>
-
-            <button class="btn btn-secondary" data-nav="view-relacao-func">
-              Relação de funcionários
-            </button>
+            <button class="btn" data-nav="view-gestao-equipe">Gestão de equipe</button>
+            <button class="btn" data-nav="view-gestao-ferias">Gestão de férias</button>
+            <button class="btn" data-nav="view-escala">Escala de trabalho</button>
+            <button class="btn btn-secondary" data-nav="view-relacao-func">Relação de funcionários</button>
           </div>
 
-          <!-- Meus dados -->
           <div class="card">
             <h2>Meus dados</h2>
             <p style="font-size:13px;">
               Visualize seu crachá digital e acompanhe seu saldo de férias.
             </p>
-
-            <button class="btn" data-nav="view-meus-dados">
-              Meu perfil / crachá
-            </button>
-
-            <button class="btn btn-secondary" data-nav="view-minhas-ferias">
-              Minhas férias
-            </button>
+            <button class="btn" data-nav="view-meus-dados">Meu perfil / crachá</button>
+            <button class="btn btn-secondary" data-nav="view-minhas-ferias">Minhas férias</button>
           </div>
 
-          <!-- Avaliação e feedback -->
           <div class="card">
             <h2>Avaliação e feedback</h2>
             <p style="font-size:13px;">
-              Registre avaliações de experiência, periódicas e feedbacks estruturados.
+              Registre avaliações e troque feedbacks estruturados com sua equipe.
             </p>
-
-            <button class="btn" data-nav="view-avaliacoes">
-              Avaliações
-            </button>
-
-            <button class="btn btn-secondary" data-nav="view-feedbacks">
-              Feedbacks
-            </button>
+            <button class="btn" data-nav="view-avaliacoes">Avaliações</button>
+            <button class="btn btn-secondary" data-nav="view-feedbacks">Feedbacks</button>
           </div>
 
-          <!-- Ferramentas adicionais (ex.: advertência, comentários internos) -->
           <div class="card">
             <h2>Ferramentas de gestão</h2>
             <p style="font-size:13px;">
               Recursos para advertências, comentários internos e relatórios.
             </p>
-
-            <button class="btn" data-nav="view-advertencias">
-              Advertências
-            </button>
-
-            <button class="btn btn-secondary" data-nav="view-comentarios">
-              Comentários internos
-            </button>
+            <button class="btn" data-nav="view-advertencias">Advertências</button>
+            <button class="btn btn-secondary" data-nav="view-comentarios">Comentários internos</button>
           </div>
 
         </div>
@@ -439,7 +374,7 @@
                 </tr>
               </thead>
               <tbody>
-                <!-- Linhas geradas via JS -->
+                <!-- Linhas via JS -->
               </tbody>
             </table>
           </div>
@@ -517,12 +452,8 @@
                   <option value="logistica">Logística</option>
                   <option value="locacao">Locação</option>
                   <option value="operacao">Operação</option>
+                  <option value="rh">RH</option>
                 </select>
-              </div>
-
-              <div class="input-group">
-                <label for="colab-foto">Foto 3x4</label>
-                <input id="colab-foto" type="file" accept="image/*" />
               </div>
 
               <button type="button" id="btn-salvar-colaborador" class="btn">
@@ -533,9 +464,7 @@
         </div>
       </section>
 
-      <!-- As demais seções (escala, férias, avaliações, feedback etc.) virão depois,
-           mas já deixamos contêineres básicos para o JS preencher. -->
-
+      <!-- ESCALA -->
       <section id="view-escala" class="page-section hidden">
         <div class="card">
           <h2>Escala de trabalho</h2>
@@ -561,27 +490,25 @@
           </div>
 
           <div id="escala-container" style="overflow-x:auto;margin-top:12px;">
-            <!-- Tabela da escala será gerada via JS -->
+            <!-- tabela via JS -->
           </div>
         </div>
       </section>
 
+      <!-- GESTÃO DE FÉRIAS (placeholder) -->
       <section id="view-gestao-ferias" class="page-section hidden">
         <div class="card">
           <h2>Gestão de férias</h2>
           <button class="btn-secondary btn" data-nav="view-dashboard">← Voltar</button>
         </div>
-
-        <div class="card">
+        <div class="card" id="gestao-ferias-container">
           <p style="font-size:13px;">
-            Lançamento e aprovação de férias (assistente de RH, supervisores e gestor).
+            Em breve: sugestão, aprovação e bloqueios de férias.
           </p>
-          <div id="gestao-ferias-container">
-            <!-- Conteúdo específico será implementado em app.js -->
-          </div>
         </div>
       </section>
 
+      <!-- RELAÇÃO DE FUNCIONÁRIOS -->
       <section id="view-relacao-func" class="page-section hidden">
         <div class="card">
           <h2>Relação de funcionários</h2>
@@ -600,12 +527,13 @@
               </tr>
             </thead>
             <tbody>
-              <!-- Preenchido via JS -->
+              <!-- JS -->
             </tbody>
           </table>
         </div>
       </section>
 
+      <!-- MEUS DADOS -->
       <section id="view-meus-dados" class="page-section hidden">
         <div class="card">
           <h2>Meus dados</h2>
@@ -613,10 +541,11 @@
         </div>
 
         <div class="card" id="meus-dados-container">
-          <!-- Crachá digital, foto e informações pessoais (preenchido via JS) -->
+          <!-- crachá via JS -->
         </div>
       </section>
 
+      <!-- MINHAS FÉRIAS -->
       <section id="view-minhas-ferias" class="page-section hidden">
         <div class="card">
           <h2>Minhas férias</h2>
@@ -624,10 +553,11 @@
         </div>
 
         <div class="card" id="minhas-ferias-container">
-          <!-- Sugestão de férias, saldo e histórico (preenchido via JS) -->
+          <!-- férias via JS -->
         </div>
       </section>
 
+      <!-- AVALIAÇÕES -->
       <section id="view-avaliacoes" class="page-section hidden">
         <div class="card">
           <h2>Avaliações</h2>
@@ -635,10 +565,13 @@
         </div>
 
         <div class="card" id="avaliacoes-container">
-          <!-- Avaliação de experiência, periódica etc. -->
+          <p style="font-size:13px;">
+            Em breve: avaliações de experiência, periódicas e por cargo.
+          </p>
         </div>
       </section>
 
+      <!-- FEEDBACKS -->
       <section id="view-feedbacks" class="page-section hidden">
         <div class="card">
           <h2>Feedbacks</h2>
@@ -646,10 +579,13 @@
         </div>
 
         <div class="card" id="feedbacks-container">
-          <!-- Conversas de feedback tipo chat -->
+          <p style="font-size:13px;">
+            Em breve: histórico de feedbacks em formato de conversa.
+          </p>
         </div>
       </section>
 
+      <!-- ADVERTÊNCIAS -->
       <section id="view-advertencias" class="page-section hidden">
         <div class="card">
           <h2>Advertências</h2>
@@ -657,10 +593,13 @@
         </div>
 
         <div class="card" id="advertencias-container">
-          <!-- Cadastro, impressão e histórico de advertências -->
+          <p style="font-size:13px;">
+            Em breve: cadastro, impressão e histórico de advertências.
+          </p>
         </div>
       </section>
 
+      <!-- COMENTÁRIOS INTERNOS -->
       <section id="view-comentarios" class="page-section hidden">
         <div class="card">
           <h2>Comentários internos</h2>
@@ -668,22 +607,21 @@
         </div>
 
         <div class="card" id="comentarios-container">
-          <!-- Comentários de uso interno (não visíveis para o colaborador) -->
+          <p style="font-size:13px;">
+            Em breve: comentários internos visíveis apenas para liderança/RH.
+          </p>
         </div>
       </section>
 
     </main>
   </div>
 
-  <!-- Modal genérico (confirmações, avisos) -->
+  <!-- Modal genérico -->
   <div id="modal-root" class="hidden"></div>
 
-  <!-- Bibliotecas e app.js -->
+  <!-- Firebase e app.js -->
   <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
   <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
-  <!-- Versão 2.x UMD do Supabase -->
-  <script src="https://unpkg.com/@supabase/supabase-js@2.48.0/dist/umd/supabase.min.js"></script>
-  <!-- Seu script principal -->
   <script src="app.js"></script>
 </body>
 </html>

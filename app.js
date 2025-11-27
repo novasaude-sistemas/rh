@@ -11,13 +11,7 @@ const firebaseConfig = {
   storageBucket: "novasaude-rh.firebasestorage.app",
   messagingSenderId: "425478661304",
   appId: "1:425478661304:web:b8fa21e4e20da247d6404d"
-};
-// [web:259][web:301]
-
-const SUPABASE_URL = "https://iigbyjilesdyaqusevdk.supabase.co";
-const SUPABASE_ANON_KEY =
-  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlpZ2J5amlsZXNkeWFxdXNldmRrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjQyNjc5MjgsImV4cCI6MjA3OTg0MzkyOH0.W-VI0ANZwFqVrzEGoPX1bUVRhvqo_6Bo0bSCpp8fVWU";
-// [web:276][web:304]
+}; // [web:301]
 
 // Caminhos no Realtime Database
 const PATH_USERS = "/users";
@@ -27,7 +21,6 @@ const PATH_EMPLOYEES = "/employees";
 const AppCore = {
   firebaseApp: null,
   db: null,
-  supabase: null,
   currentUser: null, // { userId, username, perfil, departamento, employeeId }
   refreshIntervalId: null,
   currentViewId: "view-dashboard"
@@ -42,14 +35,6 @@ function initApp() {
   if (!AppCore.firebaseApp) {
     AppCore.firebaseApp = firebase.initializeApp(firebaseConfig);
     AppCore.db = firebase.database();
-  }
-
-  // Supabase
-  if (!AppCore.supabase) {
-    AppCore.supabase = window.supabase.createClient(
-      SUPABASE_URL,
-      SUPABASE_ANON_KEY
-    );
   }
 
   // Recupera usuário salvo
@@ -211,7 +196,6 @@ function navigateTo(viewId) {
       sec.classList.add("active");
       sec.classList.remove("hidden");
     } else if (sec.id !== "view-dashboard") {
-      // Dashboard é uma section, mas tratamos como view também
       sec.classList.remove("active");
       sec.classList.add("hidden");
     }
@@ -252,12 +236,10 @@ function refreshCurrentView() {
     case "view-escala":
       loadEscala();
       break;
-    // As demais telas (férias gestão, avaliações, feedback, etc.) podem ter suas funções
     default:
       break;
   }
 
-  // Notificações sempre atualizadas
   loadNotificacoes();
 }
 
@@ -270,7 +252,7 @@ function startAutoRefresh(intervalMs) {
       refreshCurrentView();
     }
   }, intervalMs);
-} // [web:272][web:299][web:311]
+} // [web:299]
 
 // =========================
 // BIND DE EVENTOS DA UI
@@ -353,8 +335,7 @@ function bindUIEvents() {
 // =========================
 
 async function loadDashboardData() {
-  // Aqui você pode montar pequenos cards (qtd de colaboradores, férias pendentes, etc.)
-  // Por ora, mantém simples.
+  // Espaço para cards/resumos futuros.
 }
 
 // =========================
@@ -375,7 +356,7 @@ async function loadGestaoEquipe() {
 
   Object.keys(allEmployees).forEach((id) => {
     const c = allEmployees[id];
-    if (filtroNome && !c.nome.toLowerCase().includes(filtroNome)) {
+    if (filtroNome && !c.nome?.toLowerCase().includes(filtroNome)) {
       return;
     }
 
@@ -398,7 +379,7 @@ async function loadGestaoEquipe() {
     tabelaBody.innerHTML = rows.join("");
   }
 
-  // Evento de clique em editar
+  // Clique em editar
   tabelaBody.querySelectorAll("button[data-acao='editar']").forEach((b) => {
     b.onclick = async () => {
       const tr = b.closest("tr");
@@ -427,6 +408,7 @@ async function carregarColaboradorNoFormulario(userId) {
   document.getElementById("colab-status").value = c.status || "ativo";
 }
 
+// SALVAR COLABORADOR (sem foto)
 async function onSalvarColaborador() {
   if (!AppCore.currentUser) {
     showModal("Erro", "É necessário estar logado para salvar.");
@@ -439,13 +421,14 @@ async function onSalvarColaborador() {
   const dataNasc = document.getElementById("colab-data-nasc").value;
   const cargo = document.getElementById("colab-cargo").value.trim();
   const setor = document.getElementById("colab-setor").value.trim();
-  const dataAdm = document.getElementById("colab-data-adm").value;
+  const dataAdm =
+    document.getElementById("colab-data-adm").value;
   const status = document.getElementById("colab-status").value;
   const usuario = document.getElementById("colab-usuario").value.trim();
   const senha = document.getElementById("colab-senha").value;
   const perfil = document.getElementById("colab-perfil").value;
-  const departamento = document.getElementById("colab-departamento").value;
-  const fotoFile = document.getElementById("colab-foto").files[0];
+  const departamento =
+    document.getElementById("colab-departamento").value;
 
   if (!nome || !usuario || (!idCampo.value && !senha)) {
     showModal(
@@ -458,7 +441,6 @@ async function onSalvarColaborador() {
   try {
     let userId = idCampo.value || generateId("user");
 
-    // Monta dados de usuário
     const userData = {
       username: usuario,
       perfil,
@@ -471,7 +453,6 @@ async function onSalvarColaborador() {
       userData.createdAt = Date.now();
     }
 
-    // Monta dados de colaborador
     const colabData = {
       id: userId,
       nome,
@@ -484,7 +465,6 @@ async function onSalvarColaborador() {
       updatedAt: Date.now()
     };
 
-    // Se for novo
     if (!idCampo.value) {
       colabData.createdAt = Date.now();
     }
@@ -501,11 +481,6 @@ async function onSalvarColaborador() {
 
     await AppCore.db.ref().update(updates);
 
-    // Upload da foto, se houver
-    if (fotoFile) {
-      await uploadFotoColaborador(userId, fotoFile);
-    }
-
     showModal("Sucesso", "Colaborador salvo com sucesso.");
     document.getElementById("colab-senha").value = "";
     idCampo.value = userId;
@@ -513,31 +488,6 @@ async function onSalvarColaborador() {
   } catch (e) {
     console.error(e);
     showModal("Erro", "Não foi possível salvar o colaborador.");
-  }
-}
-
-async function uploadFotoColaborador(userId, file) {
-  const filePath = `employees/${userId}/foto.jpg`;
-
-  const { data, error } = await AppCore.supabase.storage
-    .from("novasaude-rh")
-    .upload(filePath, file, {
-      upsert: true,
-      contentType: file.type || "image/jpeg"
-    }); // [web:144][web:318]
-
-  if (error) {
-    console.error(error);
-    throw new Error("Erro ao enviar foto.");
-  }
-
-  const { data: pub } = AppCore.supabase.storage
-    .from("novasaude-rh")
-    .getPublicUrl(filePath);
-
-  const url = pub?.publicUrl || "";
-  if (url) {
-    await dbUpdate(`${PATH_EMPLOYEES}/${userId}`, { fotoUrl: url });
   }
 }
 
@@ -591,38 +541,25 @@ async function loadMeusDados() {
     <div style="display:flex;gap:16px;align-items:flex-start;flex-wrap:wrap;">
       <div>
         <div style="width:140px;height:180px;border:1px solid #e5e7eb;display:flex;align-items:center;justify-content:center;background:#f9fafb;">
-          ${
-            c.fotoUrl
-              ? `<img src="${c.fotoUrl}" alt="Foto" style="max-width:100%;max-height:100%;object-fit:cover;">`
-              : "<span style='font-size:12px;color:#9ca3af;'>Sem foto</span>"
-          }
+          <span style='font-size:12px;color:#9ca3af;'>Sem foto</span>
         </div>
       </div>
       <div>
         <h3 style="margin-top:0;">${c.nome || ""}</h3>
         <p style="font-size:13px;margin:4px 0;">CPF: ${c.cpf || "-"}</p>
-        <p style="font-size:13px;margin:4px 0;">Cargo: ${
-          c.cargo || "-"
-        }</p>
-        <p style="font-size:13px;margin:4px 0;">Departamento: ${
-          c.setor || "-"
-        }</p>
-        <p style="font-size:13px;margin:4px 0;">Admissão: ${
-          c.dataAdmissao || "-"
-        }</p>
-        <p style="font-size:13px;margin:4px 0;">Status: ${
-          c.status || "-"
-        }</p>
+        <p style="font-size:13px;margin:4px 0;">Cargo: ${c.cargo || "-"}</p>
+        <p style="font-size:13px;margin:4px 0;">Departamento: ${c.setor || "-"}</p>
+        <p style="font-size:13px;margin:4px 0;">Admissão: ${c.dataAdmissao || "-"}</p>
+        <p style="font-size:13px;margin:4px 0;">Status: ${c.status || "-"}</p>
       </div>
     </div>
   `;
 }
 
 async function loadMinhasFerias() {
-  // Estrutura de férias ainda será detalhada; aqui apenas um placeholder.
   const container = document.getElementById("minhas-ferias-container");
   container.innerHTML =
-    "<p style='font-size:13px;'>Módulo de férias será detalhado na próxima etapa (sugestão, saldo, bloqueio 45 dias, etc.).</p>";
+    "<p style='font-size:13px;'>Módulo de férias será detalhado na próxima etapa.</p>";
 }
 
 // =========================
@@ -639,7 +576,6 @@ async function loadEscala() {
     return;
   }
 
-  // Por enquanto, apenas mostra uma tabela simples com datas do mês
   const [anoStr, mesStr] = mesInput.split("-");
   const ano = parseInt(anoStr, 10);
   const mes = parseInt(mesStr, 10);
@@ -660,7 +596,7 @@ async function loadEscala() {
     const c = allEmployees[id];
     let row = `<tr><td>${c.nome || ""}</td>`;
     for (let d = 1; d <= diasNoMes; d++) {
-      row += "<td></td>"; // Futuro: preencher com F, FE, AT etc.
+      row += "<td></td>";
     }
     row += "</tr>";
     linhas.push(row);
@@ -688,8 +624,7 @@ async function loadNotificacoes() {
   const panel = document.getElementById("notif-panel");
   const badge = document.getElementById("notif-badge");
 
-  // Ainda não há nó de notificações; placeholder simples
-  const pendentes = []; // futura leitura em /notificacoes/{userId}
+  const pendentes = []; // futuro: ler /notificacoes/{userId}
 
   if (!pendentes.length) {
     badge.classList.add("hidden");
