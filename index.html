@@ -1,0 +1,689 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <title>Nova Saúde RH</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <style>
+    * {
+      box-sizing: border-box;
+      font-family: Arial, Helvetica, sans-serif;
+    }
+
+    body {
+      margin: 0;
+      background-color: #f3f4f6;
+      color: #111827;
+    }
+
+    header {
+      background-color: #111827;
+      color: #f9fafb;
+      padding: 10px 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    header .logo {
+      font-weight: bold;
+      font-size: 18px;
+    }
+
+    header .user-info {
+      font-size: 14px;
+    }
+
+    header button {
+      margin-left: 8px;
+      padding: 4px 10px;
+      border-radius: 4px;
+      border: none;
+      cursor: pointer;
+      font-size: 13px;
+    }
+
+    header .btn-sair {
+      background-color: #b91c1c;
+      color: #fff;
+    }
+
+    header .btn-atualizar {
+      background-color: #2563eb;
+      color: #fff;
+    }
+
+    main {
+      padding: 16px;
+    }
+
+    .hidden {
+      display: none !important;
+    }
+
+    .card {
+      background-color: #ffffff;
+      border-radius: 8px;
+      padding: 16px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+      margin-bottom: 16px;
+    }
+
+    .card h2 {
+      margin-top: 0;
+      font-size: 18px;
+    }
+
+    .btn {
+      display: inline-block;
+      padding: 8px 14px;
+      margin: 4px 4px 4px 0;
+      border-radius: 4px;
+      border: none;
+      cursor: pointer;
+      background-color: #2563eb;
+      color: #fff;
+      font-size: 14px;
+    }
+
+    .btn-secondary {
+      background-color: #6b7280;
+    }
+
+    .btn-danger {
+      background-color: #b91c1c;
+    }
+
+    .input-group {
+      margin-bottom: 10px;
+    }
+
+    .input-group label {
+      display: block;
+      font-size: 13px;
+      margin-bottom: 4px;
+    }
+
+    .input-group input,
+    .input-group select,
+    .input-group textarea {
+      width: 100%;
+      padding: 6px 8px;
+      border: 1px solid #d1d5db;
+      border-radius: 4px;
+      font-size: 14px;
+    }
+
+    .columns {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+
+    .col-6 {
+      flex: 1 1 300px;
+    }
+
+    .table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+    }
+
+    .table th,
+    .table td {
+      border: 1px solid #e5e7eb;
+      padding: 6px 8px;
+      text-align: left;
+    }
+
+    .table th {
+      background-color: #f9fafb;
+      font-weight: 600;
+    }
+
+    /* Layout das “páginas” internas */
+    .page-section {
+      display: none;
+    }
+
+    .page-section.active {
+      display: block;
+    }
+
+    /* Login */
+    #page-login {
+      height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    #login-box {
+      width: 100%;
+      max-width: 380px;
+      background-color: #ffffff;
+      border-radius: 8px;
+      padding: 24px;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.15);
+    }
+
+    #login-box h1 {
+      margin-top: 0;
+      font-size: 20px;
+      margin-bottom: 16px;
+    }
+
+    #login-message {
+      font-size: 13px;
+      color: #b91c1c;
+      margin-bottom: 8px;
+      min-height: 18px;
+    }
+
+    /* Dashboard inicial (macrocampos) */
+    #macrogrid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 16px;
+    }
+
+    /* Notificações (sininho) */
+    .notif-area {
+      position: relative;
+      display: inline-block;
+      margin-right: 8px;
+    }
+
+    .notif-badge {
+      position: absolute;
+      top: -4px;
+      right: -4px;
+      background-color: #ef4444;
+      color: #fff;
+      font-size: 10px;
+      padding: 1px 5px;
+      border-radius: 999px;
+    }
+
+    .notif-panel {
+      position: absolute;
+      right: 0;
+      top: 24px;
+      background-color: #ffffff;
+      border-radius: 6px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+      width: 260px;
+      max-height: 300px;
+      overflow-y: auto;
+      z-index: 20;
+      padding: 8px;
+      font-size: 13px;
+    }
+
+    .notif-item {
+      border-bottom: 1px solid #e5e7eb;
+      padding: 4px 0;
+    }
+
+    .notif-item:last-child {
+      border-bottom: none;
+    }
+
+    /* Modal simples */
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background-color: rgba(15,23,42,0.55);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 50;
+    }
+
+    .modal-box {
+      background-color: #fff;
+      padding: 16px;
+      border-radius: 8px;
+      max-width: 420px;
+      width: 90%;
+    }
+
+    .modal-box h3 {
+      margin-top: 0;
+      font-size: 16px;
+    }
+
+    @media (max-width: 640px) {
+      header {
+        flex-wrap: wrap;
+        gap: 8px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- =================== -->
+  <!--  PÁGINA: LOGIN      -->
+  <!-- =================== -->
+  <div id="page-login" class="page-section active">
+    <div id="login-box">
+      <h1>Nova Saúde RH</h1>
+      <p style="font-size:13px;margin-top:-6px;margin-bottom:10px;">
+        Acesse com usuário e senha para entrar no painel.
+      </p>
+
+      <div id="login-message"></div>
+
+      <div class="input-group">
+        <label for="login-username">Usuário</label>
+        <input id="login-username" type="text" autocomplete="username" />
+      </div>
+
+      <div class="input-group">
+        <label for="login-password">Senha</label>
+        <input id="login-password" type="password" autocomplete="current-password" />
+      </div>
+
+      <button id="btn-login" class="btn" style="width:100%;margin-top:4px;">
+        Entrar
+      </button>
+    </div>
+  </div>
+
+  <!-- =================== -->
+  <!--  PÁGINA: APLICATIVO -->
+  <!-- =================== -->
+  <div id="page-app" class="page-section hidden">
+
+    <!-- Cabeçalho -->
+    <header>
+      <div class="logo">Nova Saúde RH</div>
+
+      <div class="user-info">
+        <span id="header-user-label"></span>
+
+        <span class="notif-area">
+          <button id="btn-notificacoes" title="Notificações" style="background:#4b5563;color:#fff;">
+            🔔
+          </button>
+          <span id="notif-badge" class="notif-badge hidden">0</span>
+          <div id="notif-panel" class="notif-panel hidden"></div>
+        </span>
+
+        <button id="btn-refresh" class="btn-atualizar btn">
+          Atualizar
+        </button>
+
+        <button id="btn-logout" class="btn-sair">
+          Sair
+        </button>
+      </div>
+    </header>
+
+    <!-- Conteúdo principal -->
+    <main>
+
+      <!-- DASHBOARD (macrocampos) -->
+      <section id="view-dashboard" class="page-section active">
+        <div class="card">
+          <h2>Início</h2>
+          <p style="font-size:13px;">
+            Utilize os blocos abaixo para acessar as funções de RH, conforme o seu perfil.
+          </p>
+        </div>
+
+        <div id="macrogrid">
+
+          <!-- Minha equipe -->
+          <div class="card">
+            <h2>Minha equipe</h2>
+            <p style="font-size:13px;">
+              Gestão de escala, férias, dados e histórico dos colaboradores.
+            </p>
+
+            <button class="btn" data-nav="view-gestao-equipe">
+              Gestão de equipe
+            </button>
+
+            <button class="btn" data-nav="view-gestao-ferias">
+              Gestão de férias
+            </button>
+
+            <button class="btn" data-nav="view-escala">
+              Escala de trabalho
+            </button>
+
+            <button class="btn btn-secondary" data-nav="view-relacao-func">
+              Relação de funcionários
+            </button>
+          </div>
+
+          <!-- Meus dados -->
+          <div class="card">
+            <h2>Meus dados</h2>
+            <p style="font-size:13px;">
+              Visualize seu crachá digital e acompanhe seu saldo de férias.
+            </p>
+
+            <button class="btn" data-nav="view-meus-dados">
+              Meu perfil / crachá
+            </button>
+
+            <button class="btn btn-secondary" data-nav="view-minhas-ferias">
+              Minhas férias
+            </button>
+          </div>
+
+          <!-- Avaliação e feedback -->
+          <div class="card">
+            <h2>Avaliação e feedback</h2>
+            <p style="font-size:13px;">
+              Registre avaliações de experiência, periódicas e feedbacks estruturados.
+            </p>
+
+            <button class="btn" data-nav="view-avaliacoes">
+              Avaliações
+            </button>
+
+            <button class="btn btn-secondary" data-nav="view-feedbacks">
+              Feedbacks
+            </button>
+          </div>
+
+          <!-- Ferramentas adicionais (ex.: advertência, comentários internos) -->
+          <div class="card">
+            <h2>Ferramentas de gestão</h2>
+            <p style="font-size:13px;">
+              Recursos para advertências, comentários internos e relatórios.
+            </p>
+
+            <button class="btn" data-nav="view-advertencias">
+              Advertências
+            </button>
+
+            <button class="btn btn-secondary" data-nav="view-comentarios">
+              Comentários internos
+            </button>
+          </div>
+
+        </div>
+      </section>
+
+      <!-- GESTÃO DE EQUIPE -->
+      <section id="view-gestao-equipe" class="page-section hidden">
+        <div class="card">
+          <h2>Gestão de equipe</h2>
+          <button class="btn-secondary btn" data-nav="view-dashboard">← Voltar</button>
+        </div>
+
+        <div class="columns">
+          <div class="col-6 card">
+            <h3>Lista de colaboradores</h3>
+
+            <div class="input-group">
+              <label for="filtro-equipe-nome">Buscar por nome</label>
+              <input id="filtro-equipe-nome" type="text" placeholder="Digite para filtrar..." />
+            </div>
+
+            <table class="table" id="tabela-colaboradores">
+              <thead>
+                <tr>
+                  <th>Nome</th>
+                  <th>Departamento</th>
+                  <th>Cargo</th>
+                  <th>Status</th>
+                  <th>Ações</th>
+                </tr>
+              </thead>
+              <tbody>
+                <!-- Linhas geradas via JS -->
+              </tbody>
+            </table>
+          </div>
+
+          <div class="col-6 card">
+            <h3>Cadastro / edição de colaborador</h3>
+
+            <form id="form-colaborador">
+              <input type="hidden" id="colab-id" />
+
+              <div class="input-group">
+                <label for="colab-nome">Nome completo</label>
+                <input id="colab-nome" type="text" />
+              </div>
+
+              <div class="input-group">
+                <label for="colab-cpf">CPF</label>
+                <input id="colab-cpf" type="text" />
+              </div>
+
+              <div class="input-group">
+                <label for="colab-data-nasc">Data de nascimento</label>
+                <input id="colab-data-nasc" type="date" />
+              </div>
+
+              <div class="input-group">
+                <label for="colab-cargo">Cargo</label>
+                <input id="colab-cargo" type="text" />
+              </div>
+
+              <div class="input-group">
+                <label for="colab-setor">Departamento / setor</label>
+                <input id="colab-setor" type="text" />
+              </div>
+
+              <div class="input-group">
+                <label for="colab-data-adm">Data de admissão</label>
+                <input id="colab-data-adm" type="date" />
+              </div>
+
+              <div class="input-group">
+                <label for="colab-status">Status</label>
+                <select id="colab-status">
+                  <option value="ativo">Ativo</option>
+                  <option value="afastado">Afastado</option>
+                  <option value="desligado">Desligado</option>
+                </select>
+              </div>
+
+              <div class="input-group">
+                <label for="colab-usuario">Usuário de acesso</label>
+                <input id="colab-usuario" type="text" />
+              </div>
+
+              <div class="input-group">
+                <label for="colab-senha">Senha inicial</label>
+                <input id="colab-senha" type="password" />
+              </div>
+
+              <div class="input-group">
+                <label for="colab-perfil">Perfil de acesso</label>
+                <select id="colab-perfil">
+                  <option value="colaborador">Colaborador</option>
+                  <option value="supervisor">Supervisor</option>
+                  <option value="assistente_rh">Assistente de RH</option>
+                  <option value="gestor_rh">Gestor de RH</option>
+                </select>
+              </div>
+
+              <div class="input-group">
+                <label for="colab-departamento">Departamento de vínculo</label>
+                <select id="colab-departamento">
+                  <option value="">(Selecione)</option>
+                  <option value="vendas">Vendas</option>
+                  <option value="logistica">Logística</option>
+                  <option value="locacao">Locação</option>
+                  <option value="operacao">Operação</option>
+                </select>
+              </div>
+
+              <div class="input-group">
+                <label for="colab-foto">Foto 3x4</label>
+                <input id="colab-foto" type="file" accept="image/*" />
+              </div>
+
+              <button type="button" id="btn-salvar-colaborador" class="btn">
+                Salvar colaborador
+              </button>
+            </form>
+          </div>
+        </div>
+      </section>
+
+      <!-- As demais seções (escala, férias, avaliações, feedback etc.) virão depois,
+           mas já deixamos contêineres básicos para o JS preencher. -->
+
+      <section id="view-escala" class="page-section hidden">
+        <div class="card">
+          <h2>Escala de trabalho</h2>
+          <button class="btn-secondary btn" data-nav="view-dashboard">← Voltar</button>
+        </div>
+
+        <div class="card">
+          <div class="columns">
+            <div class="col-6">
+              <div class="input-group">
+                <label for="escala-mes">Mês</label>
+                <input id="escala-mes" type="month" />
+              </div>
+            </div>
+            <div class="col-6">
+              <button id="btn-gerar-escala" class="btn" style="margin-top:20px;">
+                Gerar escala
+              </button>
+              <button id="btn-imprimir-escala" class="btn-secondary">
+                Imprimir
+              </button>
+            </div>
+          </div>
+
+          <div id="escala-container" style="overflow-x:auto;margin-top:12px;">
+            <!-- Tabela da escala será gerada via JS -->
+          </div>
+        </div>
+      </section>
+
+      <section id="view-gestao-ferias" class="page-section hidden">
+        <div class="card">
+          <h2>Gestão de férias</h2>
+          <button class="btn-secondary btn" data-nav="view-dashboard">← Voltar</button>
+        </div>
+
+        <div class="card">
+          <p style="font-size:13px;">
+            Lançamento e aprovação de férias (assistente de RH, supervisores e gestor).
+          </p>
+          <div id="gestao-ferias-container">
+            <!-- Conteúdo específico será implementado em app.js -->
+          </div>
+        </div>
+      </section>
+
+      <section id="view-relacao-func" class="page-section hidden">
+        <div class="card">
+          <h2>Relação de funcionários</h2>
+          <button class="btn-secondary btn" data-nav="view-dashboard">← Voltar</button>
+        </div>
+
+        <div class="card">
+          <table class="table" id="tabela-relacao-func">
+            <thead>
+              <tr>
+                <th>Nome</th>
+                <th>CPF</th>
+                <th>Cargo</th>
+                <th>Departamento</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              <!-- Preenchido via JS -->
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <section id="view-meus-dados" class="page-section hidden">
+        <div class="card">
+          <h2>Meus dados</h2>
+          <button class="btn-secondary btn" data-nav="view-dashboard">← Voltar</button>
+        </div>
+
+        <div class="card" id="meus-dados-container">
+          <!-- Crachá digital, foto e informações pessoais (preenchido via JS) -->
+        </div>
+      </section>
+
+      <section id="view-minhas-ferias" class="page-section hidden">
+        <div class="card">
+          <h2>Minhas férias</h2>
+          <button class="btn-secondary btn" data-nav="view-dashboard">← Voltar</button>
+        </div>
+
+        <div class="card" id="minhas-ferias-container">
+          <!-- Sugestão de férias, saldo e histórico (preenchido via JS) -->
+        </div>
+      </section>
+
+      <section id="view-avaliacoes" class="page-section hidden">
+        <div class="card">
+          <h2>Avaliações</h2>
+          <button class="btn-secondary btn" data-nav="view-dashboard">← Voltar</button>
+        </div>
+
+        <div class="card" id="avaliacoes-container">
+          <!-- Avaliação de experiência, periódica etc. -->
+        </div>
+      </section>
+
+      <section id="view-feedbacks" class="page-section hidden">
+        <div class="card">
+          <h2>Feedbacks</h2>
+          <button class="btn-secondary btn" data-nav="view-dashboard">← Voltar</button>
+        </div>
+
+        <div class="card" id="feedbacks-container">
+          <!-- Conversas de feedback tipo chat -->
+        </div>
+      </section>
+
+      <section id="view-advertencias" class="page-section hidden">
+        <div class="card">
+          <h2>Advertências</h2>
+          <button class="btn-secondary btn" data-nav="view-dashboard">← Voltar</button>
+        </div>
+
+        <div class="card" id="advertencias-container">
+          <!-- Cadastro, impressão e histórico de advertências -->
+        </div>
+      </section>
+
+      <section id="view-comentarios" class="page-section hidden">
+        <div class="card">
+          <h2>Comentários internos</h2>
+          <button class="btn-secondary btn" data-nav="view-dashboard">← Voltar</button>
+        </div>
+
+        <div class="card" id="comentarios-container">
+          <!-- Comentários de uso interno (não visíveis para o colaborador) -->
+        </div>
+      </section>
+
+    </main>
+  </div>
+
+  <!-- Modal genérico (confirmações, avisos) -->
+  <div id="modal-root" class="hidden"></div>
+
+  <!-- Bibliotecas e app.js -->
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+  <!-- Versão 2.x UMD do Supabase -->
+  <script src="https://unpkg.com/@supabase/supabase-js@2.48.0/dist/umd/supabase.min.js"></script>
+  <!-- Seu script principal -->
+  <script src="app.js"></script>
+</body>
+</html>
